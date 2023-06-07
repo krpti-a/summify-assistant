@@ -16,35 +16,51 @@
 </head>
 
 <body class="antialiased">
-    <section class="flex relative bg-[#f5f5f5] items-center justify-center min-h-screen">
-        <div class="relative items-center w-full px-5 mx-auto max-w-7xl md:px-12">
-            <div>
-                <div class="text-center">
-                    <p class="w-auto"><a href="/" class="font-semibold text-[#4354ff] text-sm uppercase">Summify</a></p>
-                    <p class="mt-8 text-3xl font-extrabold tracking-tight text-black md:text-5xl">
-                        Turn Websites into Intelligent<br />Chatbot Conversations
-                    </p>
-                    <p class="max-w-xl mx-auto mt-4 text-base lg:text-xl text-slate-500">
-                        Transform static pages into dynamic conversations, engage users, and deliver information with a conversational touch.
-                    </p>
-                </div>
+<section class="flex relative bg-[#f5f5f5] items-center justify-center min-h-screen">
+    <div class="relative items-center w-full px-5 mx-auto max-w-7xl md:px-12">
+        <div>
+            <div class="text-center">
+                <p class="w-auto"><a href="/" class="font-semibold text-[#4354ff] text-sm uppercase">Summify</a></p>
+                <p class="mt-8 text-3xl font-extrabold tracking-tight text-black md:text-5xl">Unlock Deep Insights
+                    from<br/><span class="text-[#4354ff]">Documents and Websites</span>
+                </p>
+                <p class="max-w-xl mx-auto mt-4 text-base lg:text-xl text-slate-500">
+                    Extract deep insights from documents and websites effortlessly. Gain comprehensive summaries and
+                    unlock the true potential of your content, saving time and enhancing your understanding.
+                </p>
             </div>
-            <div class="max-w-lg mx-auto mt-10">
-                <div class="relative flex items-start p-4 space-x-3 bg-white shadow group rounded-2xl">
-                    <div class="flex-1 min-w-0">
-                        <p id="progress-text" class="text-gray-500"></p>
-                        <form class="flex gap-2" id="form-submit-link">
-                            @csrf
-                            <input placeholder="Paste any link..." class="w-full p-2 rounded-md border border-gray-600 focus:outline-none" name="link" />
-                            <button id="btn-submit-indexing" type="submit" class="bg-black text-white shadow px-3 rounded-md inline-flex items-center gap-2">
-                                <span>Submit</span>
-                            </button>
-                        </form>
+        </div>
+        <div class="max-w-lg mx-auto mt-10">
+            <div class="relative flex items-start p-4 space-x-3 bg-white shadow group rounded-2xl">
+                <div class="flex-1 min-w-0">
+                    <p id="progress-text" class="text-gray-500"></p>
+                    <form class="flex gap-2" id="form-submit-website">
+                        @csrf
+                        <input placeholder="Paste any link..."
+                               class="w-full p-2 rounded-md border border-gray-600 focus:outline-none" name="link"/>
+                        <button id="btn-submit-indexing" type="submit"
+                                class="bg-black text-white shadow px-3 rounded-md inline-flex items-center gap-2">
+                            <span>Submit</span>
+                        </button>
+                    </form>
+                    <br/>
+                    <form class="flex gap-2" id="form-submit-document">
+                        @csrf
+                        <input type="file" class="w-full p-2 rounded-md border border-gray-600 focus:outline-none"
+                               name="file"/>
+                        <button id="btn-submit-indexing" type="submit"
+                                class="bg-black text-white shadow px-3 rounded-md inline-flex items-center gap-2">
+                            <span>Submit</span>
+                        </button>
+                    </form>
+                    <div class="flex items-center justify-center mt-5 mb-2">
+                        <p class="w-auto font-semibold text-xs uppercase text-center">Or<br/><a href="/chat" class="text-[#4354ff]">View previous chats</a></p>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 </body>
 

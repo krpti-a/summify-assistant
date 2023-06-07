@@ -45,7 +45,7 @@ function getId(length = 6) {
 }
 
 async function markdownToHtml(markdownString) {
-    const { unified } = await import("unified");
+    const {unified} = await import("unified");
     const markdown = (await import("remark-parse")).default;
     const remark2rehype = (await import("remark-rehype")).default;
     const rehypeStringify = (await import("rehype-stringify")).default;
@@ -59,7 +59,7 @@ async function markdownToHtml(markdownString) {
     return result.value.toString();
 }
 
-function handleSubmitIndexing(form) {
+function handleSubmitIndexingWebsite(form) {
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         const link = e.target.link.value;
@@ -70,8 +70,8 @@ function handleSubmitIndexing(form) {
         btn.innerHTML = components.loadingDots;
 
         if (!link) return;
-        const body = { link };
-        fetch("/embedding", {
+        const body = {link};
+        fetch("/embedding/website", {
             headers: {
                 "Content-Type": "application/json",
                 "X-Requested-With": "XMLHttpRequest",
@@ -86,9 +86,56 @@ function handleSubmitIndexing(form) {
 
                 let text = "";
                 while (true) {
-                    const { value, done } = await reader.read();
+                    const {value, done} = await reader.read();
                     if (done) break;
-                    text = decoder.decode(value, { stream: true });
+                    text = decoder.decode(value, {stream: true});
+                    progress.innerText = text;
+                }
+
+                if (isUrl(text)) {
+                    window.location = text;
+                } else {
+                    progress.innerText = "";
+                    progress.style.borderBottom = 0;
+                }
+
+                btn.innerHTML = `Submit`;
+            })
+            .catch((e) => {
+                console.error(e);
+            });
+    });
+}
+
+function handleSubmitIndexingDocument(form) {
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        let data = new FormData();
+        data.append('file', e.target.file.files[0])
+
+        const token = e.target._token.value;
+        const progress = document.getElementById("progress-text");
+        const btn = document.getElementById("btn-submit-indexing");
+        progress.style.paddingBottom = "8px";
+        btn.innerHTML = components.loadingDots;
+
+        fetch("/embedding/document", {
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-Token": token,
+            },
+            method: "POST",
+            body: data,
+        })
+            .then(async (res) => {
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+
+                let text = "";
+                while (true) {
+                    const {value, done} = await reader.read();
+                    if (done) break;
+                    text = decoder.decode(value, {stream: true});
                     progress.innerText = text;
                 }
 
@@ -132,7 +179,7 @@ function handleSubmitQuestion(form) {
         answerComponent.innerHTML = components.thinking;
 
         if (!question) return;
-        const body = { question, chat_id };
+        const body = {question, chat_id};
         fetch("/chat", {
             headers: {
                 "Content-Type": "application/json",
@@ -149,9 +196,9 @@ function handleSubmitQuestion(form) {
 
                 let text = "";
                 while (true) {
-                    const { value, done } = await reader.read();
+                    const {value, done} = await reader.read();
                     if (done) break;
-                    text += decoder.decode(value, { stream: true });
+                    text += decoder.decode(value, {stream: true});
                     answerComponent.innerHTML = await markdownToHtml(text);
                 }
 
@@ -163,8 +210,10 @@ function handleSubmitQuestion(form) {
     });
 }
 
-const formSubmitLink = document.getElementById("form-submit-link");
-if (formSubmitLink) handleSubmitIndexing(formSubmitLink);
+const formSubmitWebsite = document.getElementById("form-submit-website");
+if (formSubmitWebsite) handleSubmitIndexingWebsite(formSubmitWebsite);
+const formSubmitDocument = document.getElementById("form-submit-document");
+if (formSubmitDocument) handleSubmitIndexingDocument(formSubmitDocument);
 
 const formQuestion = document.getElementById("form-question");
 if (formQuestion) handleSubmitQuestion(formQuestion);

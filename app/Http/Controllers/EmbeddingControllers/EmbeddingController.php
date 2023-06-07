@@ -1,48 +1,37 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\EmbeddingControllers;
 
 use App\Helpers\ServerEvent;
 use App\Models\Chat;
 use App\Models\EmbedCollection;
 use App\Models\Embedding;
 use App\Service\QueryEmbedding;
-use App\Service\Scrape;
 use App\Service\Tokenizer;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class EmbeddingController extends Controller
+class EmbeddingController
 {
-    protected Scrape $scraper;
-    protected Tokenizer $tokenizer;
-    protected QueryEmbedding $query;
-
-    public function __construct(Scrape $scrape, Tokenizer $tokenizer, QueryEmbedding $query)
+    public function __construct()
     {
-        $this->scraper = $scrape;
-        $this->tokenizer = $tokenizer;
-        $this->query = $query;
     }
 
-    public function store(Request $request)
+    public function process(string $title, string $markdown, string $type): StreamedResponse
     {
-        $url = $request->link;
-        return response()->stream(function () use ($url) {
+        return response()->stream(function () use ($title, $markdown, $type) {
             try {
-                ServerEvent::send("Start crawling: {$url}");
-                $markdown = $this->scraper->handle($url);
+                ServerEvent::send("Start crawling: {$title}");
                 $tokens = $this->tokenizer->tokenize($markdown, 256);
 
-                $title = $this->scraper->title;
                 $count = count($tokens);
                 $total = 0;
                 $collection = EmbedCollection::create([
                     'name' => $title,
                     'meta_data' => json_encode([
                         'title' => $title,
-                        'url' => $url,
+                        'type' => $type,
                     ]),
                 ]);
 
