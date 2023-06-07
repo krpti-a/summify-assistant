@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.8",
         "league/html-to-markdown": "^5.1",
         "openai-php/laravel": "^0.4.3",
+        "spatie/pdf-to-text": "^1.52",
         "symfony/dom-crawler": "^6.2"
     },
     "require-dev": {
