@@ -22,7 +22,12 @@ class DocumentEmbeddingController extends EmbeddingController
         $validated = $request->validated();
         $file = $validated['file'];
 
-        $markdown = Pdf::getText($file, '/opt/homebrew/bin/pdftotext');
+        if (app()->environment('production')){
+            $markdown = Pdf::getText($file);
+        } else {
+            $markdown = Pdf::getText($file, '/opt/homebrew/bin/pdftotext');
+        }
+
         $title = strtok($markdown, "\n");
 
         return $this->process($title, $markdown, 'document');
